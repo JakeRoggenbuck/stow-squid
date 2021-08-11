@@ -22,6 +22,7 @@ struct Config {
 enum Verbs {
     Deploy,
     Save,
+    Diff,
     None,
 }
 
@@ -29,6 +30,7 @@ fn get_verb(verb: &str) -> Verbs {
     match verb {
         "deploy" => Verbs::Deploy,
         "save" => Verbs::Save,
+        "diff" => Verbs::Diff,
         _ => Verbs::None,
     }
 }
@@ -47,8 +49,11 @@ fn deploy(config: &Config) {
     }
 }
 
-fn diff() {
+fn diff(config: &Config) {
     // TODO: Find the diff of dot.deployed and dot.origin
+    for dot in &config.files {
+        println!("{}", dot.origin);
+    }
 }
 
 fn open_config() -> Result<Config, io::Error> {
@@ -73,6 +78,8 @@ fn main() -> Result<(), de::Error> {
             save(&config);
         } else if verb == Verbs::Deploy {
             deploy(&config);
+        } else if verb == Verbs::Diff {
+            diff(&config);
         }
     }
 
