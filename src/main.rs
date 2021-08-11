@@ -19,7 +19,7 @@ enum Verbs {
     None,
 }
 
-fn get_verb(verb) -> Verbs {
+fn get_verb(verb: &str) -> Verbs {
     match verb {
         "deploy" => Verbs::Deploy,
         "save" => Verbs::Save,
