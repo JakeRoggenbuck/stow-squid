@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::cmp::PartialEq;
 use std::env;
 use std::fs::File;
 use std::io;
@@ -17,6 +18,7 @@ struct Config {
     files: Vec<Dot>,
 }
 
+#[derive(PartialEq)]
 enum Verbs {
     Deploy,
     Save,
@@ -29,6 +31,24 @@ fn get_verb(verb: &str) -> Verbs {
         "save" => Verbs::Save,
         _ => Verbs::None,
     }
+}
+
+fn save(config: &Config) {
+    // TODO: move dot.deployed -> dot.origin
+    for dot in &config.files {
+        println!("{}", dot.deployed);
+    }
+}
+
+fn deploy(config: &Config) {
+    // TODO: move dot.origin -> dot.deployed
+    for dot in &config.files {
+        println!("{}", dot.origin);
+    }
+}
+
+fn diff() {
+    // TODO: Find the diff of dot.deployed and dot.origin
 }
 
 fn open_config() -> Result<Config, io::Error> {
@@ -46,9 +66,15 @@ fn main() -> Result<(), de::Error> {
     if argc == 1 {
         println!("One arg");
     } else if argc >= 2 {
-        let _verb: Verbs = get_verb(argv.nth(1).unwrap().as_str());
+        let config = open_config().unwrap();
+
+        let verb: Verbs = get_verb(argv.nth(1).unwrap().as_str());
+        if verb == Verbs::Save {
+            save(&config);
+        } else if verb == Verbs::Deploy {
+            deploy(&config);
+        }
     }
 
-    let _config = open_config().unwrap();
     Ok(())
 }
