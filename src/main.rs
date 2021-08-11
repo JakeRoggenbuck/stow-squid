@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::env;
 use toml::{de::Error, Value};
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -12,33 +13,29 @@ struct Config {
     files: Vec<File>,
 }
 
+enum Verbs {
+    Deploy,
+    Save,
+    None,
+}
+
+fn get_verb(verb) -> Verbs {
+    match verb {
+        "deploy" => Verbs::Deploy,
+        "save" => Verbs::Save,
+        _ => Verbs::None,
+    }
+}
+
 fn main() -> Result<(), Error> {
-    let config: Config = toml::from_str(
-        r#"
-        [[files]]
-        name = bspwm
-        origin = "~/Build/dotfiles/bspwm/bspwmrc" 
-        deployed = "~/.config/bspwm/bspwmrc"
-    "#,
-    )
-    .unwrap();
+    let mut argv = env::args();
+    let argc = argv.len();
 
-    let config_structure = Config {
-        files: vec![
-            File {
-                a: "hey".to_string(),
-                b: "i".to_string(),
-            },
-            File {
-                a: "hey".to_string(),
-                b: "i".to_string(),
-            },
-        ],
-    };
-
-    let pretty_structure = toml::ser::to_string_pretty(&config_structure);
-
-    println!("{:?}", a);
+    if argc == 1 {
+        println!("One arg");
+    } else if argc >= 2 {
+        let verb = get_verb(argv.nth(1).unwrap().as_str());
+    }
 
     Ok(())
 }
