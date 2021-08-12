@@ -35,37 +35,38 @@ fn get_verb(verb: &str) -> Verbs {
     }
 }
 
-fn save(config: &Config) -> Result<(), io::Error> {
-    // TODO: move dot.deployed -> dot.origin
-    for dot in &config.files {
-        // copy(dot.deployed, dot.origin);
-        let mut line = String::new();
-        println!(
-            "Would you like to copy {} -> {}? [Y/n]",
-            dot.deployed, dot.origin
-        );
-        stdin().read_line(&mut line)?;
-        line.pop();
+fn ask(message: &str) -> Result<bool, io::Error> {
+    let mut line = String::new();
+    println!(message);
+    stdin().read_line(&mut line)?;
+    line.pop();
 
-        println!("a{}b", line);
-        match line.as_str() {
-            "Y" | "y" | "" => println!("YES"),
-            "N" | "n" | _ => println!("NO"),
+    match line.as_str() {
+        "Y" | "y" | "" => Ok(true),
+        "N" | "n" | _ => Ok(false),
+    }
+}
+
+fn action_for_dot(message: &str, action: &dyn Fn()) {
+    for dot in &config.files {
+        if ask(message) {
+            action();
         }
     }
+}
+
+fn save(config: &Config) -> Result<(), io::Error> {
+    let message = format!(
+        "Would you like to copy {} -> {}? [Y/n]",
+        dot.deployed, dot.origin
+    );
+    fn save_inner() {}
+    action_for_dot(&message, &save_inner);
+
     Ok(())
 }
 
-fn deploy(config: &Config) {
-    // TODO: move dot.origin -> dot.deployed
-    for dot in &config.files {
-        // copy(dot.origin, dot.deployed);
-        println!(
-            "Would you like to copy {} -> {}? [Y/n]",
-            dot.origin, dot.deployed
-        );
-    }
-}
+fn deploy(config: &Config) {}
 
 fn diff(config: &Config) {
     // TODO: Find the diff of dot.deployed and dot.origin
