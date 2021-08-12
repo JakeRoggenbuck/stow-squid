@@ -1,9 +1,9 @@
 use serde::{Deserialize, Serialize};
 use std::cmp::PartialEq;
 use std::env;
-use std::fs::File;
+use std::fs::{copy, File};
 use std::io;
-use std::io::Read;
+use std::io::{stdin, Read};
 use toml::de;
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -38,14 +38,29 @@ fn get_verb(verb: &str) -> Verbs {
 fn save(config: &Config) {
     // TODO: move dot.deployed -> dot.origin
     for dot in &config.files {
-        println!("{}", dot.deployed);
+        // copy(dot.deployed, dot.origin);
+        let mut line = String::new();
+        println!(
+            "Would you like to copy {} -> {}? [Y/n]",
+            dot.deployed, dot.origin
+        );
+        stdin().read_line(&mut line).unwrap();
+        match line.as_str() {
+            "Y" | "y" => println!("YES"),
+            "N" | "n" => println!("NO"),
+            _ => return,
+        }
     }
 }
 
 fn deploy(config: &Config) {
     // TODO: move dot.origin -> dot.deployed
     for dot in &config.files {
-        println!("{}", dot.origin);
+        // copy(dot.origin, dot.deployed);
+        println!(
+            "Would you like to copy {} -> {}? [Y/n]",
+            dot.origin, dot.deployed
+        );
     }
 }
 
