@@ -35,7 +35,7 @@ fn get_verb(verb: &str) -> Verbs {
     }
 }
 
-fn save(config: &Config) {
+fn save(config: &Config) -> Result<(), io::Error> {
     // TODO: move dot.deployed -> dot.origin
     for dot in &config.files {
         // copy(dot.deployed, dot.origin);
@@ -44,13 +44,16 @@ fn save(config: &Config) {
             "Would you like to copy {} -> {}? [Y/n]",
             dot.deployed, dot.origin
         );
-        stdin().read_line(&mut line).unwrap();
+        stdin().read_line(&mut line)?;
+        line.pop();
+
+        println!("a{}b", line);
         match line.as_str() {
-            "Y" | "y" => println!("YES"),
-            "N" | "n" => println!("NO"),
-            _ => return,
+            "Y" | "y" | "" => println!("YES"),
+            "N" | "n" | _ => println!("NO"),
         }
     }
+    Ok(())
 }
 
 fn deploy(config: &Config) {
