@@ -65,23 +65,33 @@ fn ask(verb: &Verbs, dot: &Dot) -> Result<bool, io::Error> {
 }
 
 /// Run a function for each dot file only if the ask was returned as true
-fn action_for_dot(config: &Config, action: &dyn Fn(), verb: &Verbs) {
+fn action_for_dot(config: &Config, action: &dyn Fn(&Dot), verb: &Verbs) {
     for dot in &config.files {
         if ask(&verb, &dot).unwrap() {
-            action();
+            action(&dot);
         }
     }
 }
 
-/// Ask for each dot file to run the save_inner on it
+/// Ask for each dot file to run save_inner on it
 fn save(config: &Config, verb: &Verbs) -> Result<(), io::Error> {
     /// Copy the deployed file to the origin location
-    fn save_inner() {}
+    fn save_inner(dot: &Dot) {
+        println!("save {:?}", dot);
+    }
     action_for_dot(&config, &save_inner, &verb);
     Ok(())
 }
 
-fn deploy(config: &Config, verb: &Verbs) {}
+/// Ask for each dot file to run deploy_inner on it
+fn deploy(config: &Config, verb: &Verbs) -> Result<(), io::Error> {
+    /// Copy the origin file to the deployed location
+    fn deploy_inner(dot: &Dot) {
+        println!("deploy {:?}", dot);
+    }
+    action_for_dot(&config, &deploy_inner, &verb);
+    Ok(())
+}
 
 fn diff(config: &Config, verb: &Verbs) {
     // TODO: Find the diff of dot.deployed and dot.origin
