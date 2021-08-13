@@ -26,6 +26,7 @@ enum Verbs {
     None,
 }
 
+/// Return the verb enum from the string passed in
 fn get_verb(verb: &str) -> Verbs {
     match verb {
         "deploy" => Verbs::Deploy,
@@ -35,15 +36,24 @@ fn get_verb(verb: &str) -> Verbs {
     }
 }
 
-fn ask(verb: &Verbs, dot: &Dot) -> Result<bool, io::Error> {
-    let mut line = String::new();
-    let message = match verb {
+/// Return the message that corresponds to the verb
+fn get_message_from_dot(verb: &Verbs, dot: &Dot) -> String {
+    match verb {
         Verbs::Deploy => format!(
             "Would you like to deploy {} -> {}? ",
             dot.origin, dot.deployed
         ),
+        Verbs::Save => format!("Would you like to save {}? ", dot.deployed),
         _ => "".to_string(),
-    };
+    }
+}
+
+/// Ask a message for a dot according to the verb and get a yes or no response
+/// Return a bool depending on the yes or no
+fn ask(verb: &Verbs, dot: &Dot) -> Result<bool, io::Error> {
+    let mut line = String::new();
+    let message = get_message_from_dot(&verb, &dot);
+
     println!("{}", message);
     stdin().read_line(&mut line)?;
     line.pop();
@@ -54,6 +64,7 @@ fn ask(verb: &Verbs, dot: &Dot) -> Result<bool, io::Error> {
     }
 }
 
+/// Run a function for each dot file only if the ask was returned as true
 fn action_for_dot(config: &Config, action: &dyn Fn(), verb: &Verbs) {
     for dot in &config.files {
         if ask(&verb, &dot).unwrap() {
@@ -62,10 +73,11 @@ fn action_for_dot(config: &Config, action: &dyn Fn(), verb: &Verbs) {
     }
 }
 
+/// Ask for each dot file to run the save_inner on it
 fn save(config: &Config, verb: &Verbs) -> Result<(), io::Error> {
+    /// Copy the deployed file to the origin location
     fn save_inner() {}
     action_for_dot(&config, &save_inner, &verb);
-
     Ok(())
 }
 
@@ -78,6 +90,7 @@ fn diff(config: &Config, verb: &Verbs) {
     }
 }
 
+/// Open the configuration file as a toml struct
 fn open_config() -> Result<Config, io::Error> {
     let mut config_file = File::open("/home/jake/.config/stow-squid/stow-squid.toml")?;
     let mut config = String::new();
