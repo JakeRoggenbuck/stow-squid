@@ -37,7 +37,7 @@ fn get_verb(verb: &str) -> Verbs {
 
 fn ask(message: &str) -> Result<bool, io::Error> {
     let mut line = String::new();
-    println!(message);
+    println!("{}", message);
     stdin().read_line(&mut line)?;
     line.pop();
 
@@ -47,21 +47,18 @@ fn ask(message: &str) -> Result<bool, io::Error> {
     }
 }
 
-fn action_for_dot(message: &str, action: &dyn Fn()) {
+fn action_for_dot(config: &Config, message: &str, action: &dyn Fn()) {
     for dot in &config.files {
-        if ask(message) {
+        if ask(message).unwrap() {
             action();
         }
     }
 }
 
 fn save(config: &Config) -> Result<(), io::Error> {
-    let message = format!(
-        "Would you like to copy {} -> {}? [Y/n]",
-        dot.deployed, dot.origin
-    );
+    let message = "Would you like to copy {} -> {}? [Y/n]";
     fn save_inner() {}
-    action_for_dot(&message, &save_inner);
+    action_for_dot(&config, &message, &save_inner);
 
     Ok(())
 }
