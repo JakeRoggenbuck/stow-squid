@@ -35,8 +35,15 @@ fn get_verb(verb: &str) -> Verbs {
     }
 }
 
-fn ask(message: &str) -> Result<bool, io::Error> {
+fn ask(verb: &Verbs, dot: &Dot) -> Result<bool, io::Error> {
     let mut line = String::new();
+    let message = match verb {
+        Verbs::Deploy => format!(
+            "Would you like to deploy {} -> {}? ",
+            dot.origin, dot.deployed
+        ),
+        _ => "".to_string(),
+    };
     println!("{}", message);
     stdin().read_line(&mut line)?;
     line.pop();
@@ -47,25 +54,24 @@ fn ask(message: &str) -> Result<bool, io::Error> {
     }
 }
 
-fn action_for_dot(config: &Config, message: &str, action: &dyn Fn()) {
+fn action_for_dot(config: &Config, action: &dyn Fn(), verb: &Verbs) {
     for dot in &config.files {
-        if ask(message).unwrap() {
+        if ask(&verb, &dot).unwrap() {
             action();
         }
     }
 }
 
-fn save(config: &Config) -> Result<(), io::Error> {
-    let message = "Would you like to copy {} -> {}? [Y/n]";
+fn save(config: &Config, verb: &Verbs) -> Result<(), io::Error> {
     fn save_inner() {}
-    action_for_dot(&config, &message, &save_inner);
+    action_for_dot(&config, &save_inner, &verb);
 
     Ok(())
 }
 
-fn deploy(config: &Config) {}
+fn deploy(config: &Config, verb: &Verbs) {}
 
-fn diff(config: &Config) {
+fn diff(config: &Config, verb: &Verbs) {
     // TODO: Find the diff of dot.deployed and dot.origin
     for dot in &config.files {
         println!("{}", dot.origin);
@@ -73,7 +79,7 @@ fn diff(config: &Config) {
 }
 
 fn open_config() -> Result<Config, io::Error> {
-    let mut config_file = File::open("/home/jake/.config/dotsin/dotsin.toml")?;
+    let mut config_file = File::open("/home/jake/.config/stow-squid/stow-squid.toml")?;
     let mut config = String::new();
     config_file.read_to_string(&mut config)?;
     let config_toml: Config = toml::from_str(config.as_str()).unwrap();
@@ -91,11 +97,11 @@ fn main() -> Result<(), de::Error> {
 
         let verb: Verbs = get_verb(argv.nth(1).unwrap().as_str());
         if verb == Verbs::Save {
-            save(&config);
+            save(&config, &verb).unwrap();
         } else if verb == Verbs::Deploy {
-            deploy(&config);
+            deploy(&config, &verb);
         } else if verb == Verbs::Diff {
-            diff(&config);
+            diff(&config, &verb);
         }
     }
 
