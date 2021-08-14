@@ -1,11 +1,11 @@
 use serde::{Deserialize, Serialize};
 use std::cmp::PartialEq;
-use std::env;
 use std::ffi::OsStr;
+use std::fmt::Display;
 use std::fs::{copy, create_dir_all, read_dir, File};
-use std::io;
 use std::io::{stdin, Read};
 use std::path::Path;
+use std::{env, io};
 use toml::de;
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -82,28 +82,27 @@ fn action_for_dot(
 
 /// Move a file or directory
 fn safely_copy(
-    from: impl AsRef<Path>,
+    from: impl AsRef<Path> + AsRef<OsStr> + Display,
     to: impl AsRef<Path> + AsRef<OsStr>,
 ) -> Result<(), io::Error> {
-    if !Path::new(&to).exists() {
-        create_dir_all(&to)?;
+    // Currently, there is not an implemented way to move entire directories
+    // so this check if the &from is a directory
+    if Path::new(&from).is_dir() {
+        eprintln!(
+            "🦈 Currently cannot move entire directories. Did not move {}.",
+            from
+        );
+    } else {
+        copy(&from, &to)?;
+        println!("📦 Moved \"{}\"!", from);
     }
-
-    // for entry in read_dir(from)? {
-    //     let entry = entry?;
-    //     if entry.file_type()?.is_dir() {
-    //         let next_to: impl AsRef<Path> + AsRef<OsStr> = to.as_ref().join(entry.file_name());
-    //         safely_copy(entry.path(), next_to)?;
-    //     } else {
-    //         copy(entry.path(), to.as_ref().join(entry.file_name()))?;
-    //     }
-    // }
 
     Ok(())
 }
 
 /// Ask for each dot file to run save_inner on it
 fn save(config: &Config, verb: &Verbs) -> Result<(), io::Error> {
+    println!("🦑 Saving move!");
     /// Copy the deployed file to the origin location
     fn save_inner(dot: &Dot) -> Result<(), io::Error> {
         safely_copy(&dot.deployed, &dot.origin)?;
@@ -115,6 +114,7 @@ fn save(config: &Config, verb: &Verbs) -> Result<(), io::Error> {
 
 /// Ask for each dot file to run deploy_inner on it
 fn deploy(config: &Config, verb: &Verbs) -> Result<(), io::Error> {
+    println!("🦑 Deploy move!");
     /// Copy the origin file to the deployed location
     fn deploy_inner(dot: &Dot) -> Result<(), io::Error> {
         copy(&dot.origin, &dot.deployed)?;
@@ -125,7 +125,7 @@ fn deploy(config: &Config, verb: &Verbs) -> Result<(), io::Error> {
     Ok(())
 }
 
-fn diff(config: &Config, verb: &Verbs) {
+fn diff(config: &Config, _verb: &Verbs) {
     // TODO: Find the diff of dot.deployed and dot.origin
     for dot in &config.files {
         println!("{}", dot.origin);
@@ -150,6 +150,8 @@ fn main() -> Result<(), de::Error> {
     } else if argc >= 2 {
         let config: Config = open_config().unwrap();
 
+        // Allow for a name of a specific dot
+        // for example, "stow-squid deploy bspwm" or "stow-squid save nvim"
         let verb: Verbs = get_verb(argv.nth(1).unwrap().as_str());
         if verb == Verbs::Save {
             save(&config, &verb).unwrap();
