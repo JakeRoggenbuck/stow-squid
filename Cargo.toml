@@ -1,8 +1,15 @@
 [package]
-name = "drop"
+name = "stow-squid"
 authors = ["jakeroggenbuck <jakeroggenbuck2@gmail.com>"]
-version = "0.1.0"
+version = "0.1.1"
+license = "MIT"
 edition = "2018"
+description = "Stow your dotfiles"
+homepage = "https://github.com/JakeRoggenbuck/stow-squid"
+repository = "https://github.com/JakeRoggenbuck/stow-squid"
+readme = "README.md"
+categories = ["command-line-utilities"]
+keywords = ["config", "dotfiles"]
 
 [dependencies]
 toml = "0.5.8"
