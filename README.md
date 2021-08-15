@@ -36,15 +36,27 @@ save-squid diff <name>
 
 ## Config
 ```toml
-[[files]]
-name = "dotfile-name"
-origin = "path/to/file/from/git/repo"
-deployed = "/path/to/where/the/file/is/placed"
+# Structure
 
+# [[files]]
+# name = "dotfile-name"
+# origin = "path/to/file/from/git/repo"
+# deployed = "/path/to/where/the/file/is/placed"
+
+
+# Example
+
+# [[files]]
+# name = "bspwm"
+# origin = "/home/jake/Build/dotfiles/bspwm/bspwmrc"
+# deployed = "/home/jake/.config/bspwm/bspwmrc"
+
+
+# Add you first dotfile here
 [[files]]
-name = "dotfile-name-two"
-origin = "path/to/other/file/from/git/repo"
-deployed = "/path/to/where/the/other/file/is/placed"
+name = ""
+origin = ""
+deployed = ""
 ```
 
 ## Config Example
