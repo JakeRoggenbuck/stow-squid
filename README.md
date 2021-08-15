@@ -1,1 +1,1 @@
-# stow-squid
+# 🦑 stow-squid
