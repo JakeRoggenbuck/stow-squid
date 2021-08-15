@@ -97,3 +97,9 @@ pub fn diff(config: &Config, _verb: &Verbs) {
         println!("{}", dot.origin);
     }
 }
+
+pub fn list(config: &Config, _verb: &Verbs) {
+    for dot in &config.files {
+        println!("{: <8}\t{} -> {}", dot.name, dot.origin, dot.deployed);
+    }
+}

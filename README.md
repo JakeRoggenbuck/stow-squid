@@ -31,6 +31,11 @@ save-squid deploy <name>
 
 ### Diff
 ```
+save-squid list
+```
+
+### Diff
+```
 save-squid diff <name>
 ```
 
