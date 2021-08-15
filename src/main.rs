@@ -6,6 +6,7 @@ use std::fs::{copy, create_dir_all, read_dir, File};
 use std::io::{stdin, Read};
 use std::path::Path;
 use std::{env, io};
+use structopt::StructOpt;
 use toml::de;
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -26,6 +27,16 @@ enum Verbs {
     Save,
     Diff,
     None,
+}
+
+#[derive(Debug, StructOpt)]
+#[structopt(name = "🦑 stow-squid", about = "Stow your dotfiles")]
+struct Opt {
+    #[structopt()]
+    verb: String,
+
+    #[structopt()]
+    dot: Option<String>,
 }
 
 /// Return the verb enum from the string passed in
@@ -142,24 +153,16 @@ fn open_config() -> Result<Config, io::Error> {
 }
 
 fn main() -> Result<(), de::Error> {
-    let mut argv = env::args();
-    let argc: usize = argv.len();
+    let opt = Opt::from_args();
 
-    if argc == 1 {
-        println!("One arg");
-    } else if argc >= 2 {
-        let config: Config = open_config().unwrap();
+    let config: Config = open_config().unwrap();
+    let verb: Verbs = get_verb(&opt.verb);
 
-        // Allow for a name of a specific dot
-        // for example, "stow-squid deploy bspwm" or "stow-squid save nvim"
-        let verb: Verbs = get_verb(argv.nth(1).unwrap().as_str());
-        if verb == Verbs::Save {
-            save(&config, &verb).unwrap();
-        } else if verb == Verbs::Deploy {
-            deploy(&config, &verb).unwrap();
-        } else if verb == Verbs::Diff {
-            diff(&config, &verb);
-        }
+    match verb {
+        Verbs::Save => save(&config, &verb).unwrap(),
+        Verbs::Deploy => deploy(&config, &verb).unwrap(),
+        Verbs::Diff => diff(&config, &verb),
+        _ => (),
     }
 
     Ok(())
