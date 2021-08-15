@@ -9,24 +9,20 @@ use std::{env, io};
 use structopt::StructOpt;
 use toml::de;
 
+pub mod verb;
+
+use verb::{get_message_from_dot, get_verb, Verbs};
+
 #[derive(Debug, Deserialize, Serialize)]
-struct Dot {
-    name: String,
-    origin: String,
-    deployed: String,
+pub struct Dot {
+    pub name: String,
+    pub origin: String,
+    pub deployed: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-struct Config {
-    files: Vec<Dot>,
-}
-
-#[derive(PartialEq, Debug)]
-enum Verbs {
-    Deploy,
-    Save,
-    Diff,
-    None,
+pub struct Config {
+    pub files: Vec<Dot>,
 }
 
 #[derive(Debug, StructOpt)]
@@ -37,28 +33,6 @@ struct Opt {
 
     #[structopt()]
     dot: Option<String>,
-}
-
-/// Return the verb enum from the string passed in
-fn get_verb(verb: &str) -> Verbs {
-    match verb {
-        "deploy" => Verbs::Deploy,
-        "save" => Verbs::Save,
-        "diff" => Verbs::Diff,
-        _ => Verbs::None,
-    }
-}
-
-/// Return the message that corresponds to the verb
-fn get_message_from_dot(verb: &Verbs, dot: &Dot) -> String {
-    match verb {
-        Verbs::Deploy => format!(
-            "Would you like to deploy {} -> {}? ",
-            dot.origin, dot.deployed
-        ),
-        Verbs::Save => format!("Would you like to save {}? ", dot.deployed),
-        _ => "".to_string(),
-    }
 }
 
 /// Ask a message for a dot according to the verb and get a yes or no response
@@ -122,11 +96,13 @@ fn safely_copy(
 /// Ask for each dot file to run save_inner on it
 fn save(config: &Config, verb: &Verbs, dot_name: Option<String>) -> Result<(), io::Error> {
     println!("🦑 Saving move!");
+
     /// Copy the deployed file to the origin location
     fn save_inner(dot: &Dot) -> Result<(), io::Error> {
         safely_copy(&dot.deployed, &dot.origin)?;
         Ok(())
     }
+
     action_for_dot(&config, &save_inner, &verb, dot_name)?;
     Ok(())
 }
@@ -134,12 +110,14 @@ fn save(config: &Config, verb: &Verbs, dot_name: Option<String>) -> Result<(), i
 /// Ask for each dot file to run deploy_inner on it
 fn deploy(config: &Config, verb: &Verbs, dot_name: Option<String>) -> Result<(), io::Error> {
     println!("🦑 Deploy move!");
+
     /// Copy the origin file to the deployed location
     fn deploy_inner(dot: &Dot) -> Result<(), io::Error> {
         copy(&dot.origin, &dot.deployed)?;
         println!("Successfully deployed {}!", dot.name);
         Ok(())
     }
+
     action_for_dot(&config, &deploy_inner, &verb, dot_name)?;
     Ok(())
 }
