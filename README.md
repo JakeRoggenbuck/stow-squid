@@ -2,7 +2,7 @@
 Stow your dotfiles
 
 ## Install
-```
+```sh
 # ssh (recommended)
 git clone git@github.com:JakeRoggenbuck/stow-squid.git
 
@@ -10,6 +10,9 @@ git clone git@github.com:JakeRoggenbuck/stow-squid.git
 git clone https://github.com/JakeRoggenbuck/stow-squid.git
 
 cargo install --path .
+
+# Add config to ~/.config/stow-squid/stow-squid.toml
+mkdir -p ~/.config/stow-squid/ && cp example-config.toml ~/.config/stow-squid/stow-squid.toml
 ```
 ssh [recommended](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories)
 
