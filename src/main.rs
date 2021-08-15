@@ -38,11 +38,13 @@ struct Opt {
     dot: Option<String>,
 }
 
+/// Get the path where the config should be
 fn get_config_path() -> String {
     let config_path = "stow-squid/stow-squid.toml";
     let home_path = home_dir().unwrap().display().to_string();
 
     let user_config = home_path + &"/.config/".to_string() + config_path;
+
     if Path::new(&user_config).exists() {
         return user_config;
     } else {
