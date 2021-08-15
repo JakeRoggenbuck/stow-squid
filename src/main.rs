@@ -82,8 +82,16 @@ fn action_for_dot(
     config: &Config,
     action: &dyn Fn(&Dot) -> Result<(), io::Error>,
     verb: &Verbs,
+    dot_name: Option<String>,
 ) -> Result<(), io::Error> {
     for dot in &config.files {
+        // If a name is provided, continue everything but the name
+        if dot_name.is_some() {
+            if dot_name.as_ref().unwrap() != &dot.name {
+                continue;
+            }
+        }
+
         if ask(&verb, &dot).unwrap() {
             action(&dot)?;
         }
@@ -112,19 +120,19 @@ fn safely_copy(
 }
 
 /// Ask for each dot file to run save_inner on it
-fn save(config: &Config, verb: &Verbs) -> Result<(), io::Error> {
+fn save(config: &Config, verb: &Verbs, dot_name: Option<String>) -> Result<(), io::Error> {
     println!("🦑 Saving move!");
     /// Copy the deployed file to the origin location
     fn save_inner(dot: &Dot) -> Result<(), io::Error> {
         safely_copy(&dot.deployed, &dot.origin)?;
         Ok(())
     }
-    action_for_dot(&config, &save_inner, &verb)?;
+    action_for_dot(&config, &save_inner, &verb, dot_name)?;
     Ok(())
 }
 
 /// Ask for each dot file to run deploy_inner on it
-fn deploy(config: &Config, verb: &Verbs) -> Result<(), io::Error> {
+fn deploy(config: &Config, verb: &Verbs, dot_name: Option<String>) -> Result<(), io::Error> {
     println!("🦑 Deploy move!");
     /// Copy the origin file to the deployed location
     fn deploy_inner(dot: &Dot) -> Result<(), io::Error> {
@@ -132,7 +140,7 @@ fn deploy(config: &Config, verb: &Verbs) -> Result<(), io::Error> {
         println!("Successfully deployed {}!", dot.name);
         Ok(())
     }
-    action_for_dot(&config, &deploy_inner, &verb)?;
+    action_for_dot(&config, &deploy_inner, &verb, dot_name)?;
     Ok(())
 }
 
@@ -153,14 +161,14 @@ fn open_config() -> Result<Config, io::Error> {
 }
 
 fn main() -> Result<(), de::Error> {
-    let opt = Opt::from_args();
+    let opt: Opt = Opt::from_args();
 
     let config: Config = open_config().unwrap();
     let verb: Verbs = get_verb(&opt.verb);
 
     match verb {
-        Verbs::Save => save(&config, &verb).unwrap(),
-        Verbs::Deploy => deploy(&config, &verb).unwrap(),
+        Verbs::Save => save(&config, &verb, opt.dot).unwrap(),
+        Verbs::Deploy => deploy(&config, &verb, opt.dot).unwrap(),
         Verbs::Diff => diff(&config, &verb),
         _ => (),
     }
