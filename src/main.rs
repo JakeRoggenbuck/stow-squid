@@ -1,3 +1,4 @@
+use home::home_dir;
 use serde::{Deserialize, Serialize};
 use std::cmp::PartialEq;
 use std::ffi::OsStr;
@@ -38,8 +39,18 @@ struct Opt {
 }
 
 fn get_config_path() -> String {
-    // TODO: change this to find path
-    "/home/jake/.config/stow-squid/stow-squid.toml".to_string()
+    let config_path = "stow-squid/stow-squid.toml";
+    let home_path = home_dir().unwrap().display().to_string();
+
+    let user_config = home_path + &"/.config/".to_string() + config_path;
+    if Path::new(&user_config).exists() {
+        return user_config;
+    } else {
+        eprintln!("Config file not found at {}", user_config);
+        eprintln!("An example can be found at https://github.com/JakeRoggenbuck/stow-squid#config-example");
+    }
+
+    String::new()
 }
 
 /// Open the configuration file as a toml struct
