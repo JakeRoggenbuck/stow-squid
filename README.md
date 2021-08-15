@@ -19,6 +19,43 @@ save-squid deploy <name>
 save-squid diff <name>
 ```
 
+## Config
+```toml
+[[files]]
+name = "dotfile-name"
+origin = "path/to/file/from/git/repo"
+deployed = "/path/to/where/the/file/is/placed"
+
+[[files]]
+name = "dotfile-name-two"
+origin = "path/to/other/file/from/git/repo"
+deployed = "/path/to/where/the/other/file/is/placed"
+```
+
+## Config Example
+```toml
+[[files]]
+name = "bspwm"
+origin = "/home/jake/Build/dotfiles/bspwm/bspwmrc"
+deployed = "/home/jake/.config/bspwm/bspwmrc"
+
+[[files]]
+name = "alacritty"
+origin = "/home/jake/Build/dotfiles/alacritty/alacritty.yml"
+deployed = "/home/jake/.config/alacritty/alacritty.yml"
+
+[[files]]
+name = "bashrc"
+origin = "/home/jake/Build/dotfiles/.bashrc"
+deployed = "/home/jake/.bashrc"
+
+[[files]]
+name = "sxhkd"
+origin = "/home/jake/Build/dotfiles/sxhkd/sxhkdrc"
+deployed = "/home/jake/.config/sxhkd/sxhkdrc"
+
+```
+
 ## Help
 ```
 USAGE:
