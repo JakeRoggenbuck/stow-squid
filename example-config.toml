@@ -1,0 +1,21 @@
+# Structure
+
+# [[files]]
+# name = "dotfile-name"
+# origin = "path/to/file/from/git/repo"
+# deployed = "/path/to/where/the/file/is/placed"
+
+
+# Example
+
+# [[files]]
+# name = "bspwm"
+# origin = "/home/jake/Build/dotfiles/bspwm/bspwmrc"
+# deployed = "/home/jake/.config/bspwm/bspwmrc"
+
+
+# Add you first dotfile here
+[[files]]
+name = ""
+origin = ""
+deployed = ""
