@@ -1,6 +1,9 @@
 # 🦑 stow-squid
 Stow your dotfiles
 
+![image](https://user-images.githubusercontent.com/35516367/130694552-c0a30c2e-910d-47e1-8fe2-f4509578c56f.png)
+
+
 ## Install
 ```sh
 git clone https://github.com/JakeRoggenbuck/stow-squid.git
