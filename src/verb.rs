@@ -6,6 +6,7 @@ pub enum Verbs {
     Deploy,
     Save,
     Diff,
+    List,
     None,
 }
 
@@ -15,6 +16,7 @@ pub fn get_verb(verb: &str) -> Verbs {
         "deploy" => Verbs::Deploy,
         "save" => Verbs::Save,
         "diff" => Verbs::Diff,
+        "list" => Verbs::List,
         _ => Verbs::None,
     }
 }
@@ -40,6 +42,7 @@ mod tests {
         assert_eq!(get_verb("save"), Verbs::Save);
         assert_eq!(get_verb("deploy"), Verbs::Deploy);
         assert_eq!(get_verb("diff"), Verbs::Diff);
+        assert_eq!(get_verb("list"), Verbs::List);
         assert_eq!(get_verb("something"), Verbs::None);
         assert_eq!(get_verb("something else"), Verbs::None);
         assert_eq!(get_verb("anything"), Verbs::None);

@@ -14,7 +14,7 @@ use toml::de;
 pub mod drop;
 pub mod verb;
 
-use drop::{deploy, diff, save};
+use drop::{deploy, diff, list, save};
 use verb::{get_message_from_dot, get_verb, Verbs};
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -75,6 +75,7 @@ fn main() -> Result<(), de::Error> {
         Verbs::Save => save(&config, &verb, opt.dot).unwrap(),
         Verbs::Deploy => deploy(&config, &verb, opt.dot).unwrap(),
         Verbs::Diff => diff(&config, &verb),
+        Verbs::List => list(&config, &verb),
         _ => (),
     }
 
