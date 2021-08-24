@@ -73,7 +73,7 @@ fn safely_copy(
 
 /// Ask for each dot file to run save_inner on it
 pub fn save(config: &Config, verb: &Verbs, dot_name: Option<String>) -> Result<(), io::Error> {
-    println!("🦑 Saving move!");
+    println!("🦑 Saving mode!");
 
     /// Copy the deployed file to the origin location
     fn save_inner(dot: &Dot) -> Result<(), io::Error> {
@@ -87,7 +87,7 @@ pub fn save(config: &Config, verb: &Verbs, dot_name: Option<String>) -> Result<(
 
 /// Ask for each dot file to run deploy_inner on it
 pub fn deploy(config: &Config, verb: &Verbs, dot_name: Option<String>) -> Result<(), io::Error> {
-    println!("🦑 Deploy move!");
+    println!("🦑 Deploy mode!");
 
     /// Copy the origin file to the deployed location
     fn deploy_inner(dot: &Dot) -> Result<(), io::Error> {
