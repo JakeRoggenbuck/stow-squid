@@ -22,9 +22,9 @@ This is to update your dotfiles (that are scattered around your machine) to your
 stow-squid save <name>
 ```
 
-![image](https://user-images.githubusercontent.com/35516367/130694801-2850dcaa-355f-489e-8170-566b39095f8b.png)
+![image](https://user-images.githubusercontent.com/35516367/130696265-2dde8c08-5bee-41f4-b48d-8b69e15ac184.png)
 
-![image](https://user-images.githubusercontent.com/35516367/130694722-6bc15fd8-9c37-4a1b-af1f-e17b67631063.png)
+![image](https://user-images.githubusercontent.com/35516367/130696302-607159a2-2a69-42d4-9f20-505827e32cb1.png)
 
 ### Deploy
 This is to place all your dotfiles from your git repo to all the various places they might go
@@ -32,9 +32,9 @@ This is to place all your dotfiles from your git repo to all the various places 
 stow-squid deploy <name>
 ```
 
-![image](https://user-images.githubusercontent.com/35516367/130694893-177cf2d5-eda1-419a-b6f7-1b2eb1f1d4cf.png)
+![image](https://user-images.githubusercontent.com/35516367/130696213-d763bd68-2449-4921-8d40-b22c6114f7cb.png)
 
-![image](https://user-images.githubusercontent.com/35516367/130694977-a450efdb-b291-4093-b260-8b7c2340af8f.png)
+![image](https://user-images.githubusercontent.com/35516367/130696199-2c57623d-c6b1-4d79-98f3-f0f4b6ae9286.png)
 
 ### List
 ```
