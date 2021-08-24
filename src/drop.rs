@@ -1,4 +1,5 @@
 use super::copy;
+use super::exit;
 use super::get_message_from_dot;
 use super::{io, stdin};
 use super::{Config, Dot, Verbs};
@@ -47,6 +48,14 @@ fn safely_copy(
     from: impl AsRef<Path> + AsRef<OsStr> + Display,
     to: impl AsRef<Path> + AsRef<OsStr>,
 ) -> Result<(), io::Error> {
+    if !Path::new(&from).exists() {
+        eprintln!(
+            "🦈 The file stow-squid is copying from does not exist: {}",
+            from
+        );
+        exit(1)
+    }
+
     // TODO: Currently, there is not an implemented way to move entire directories
     // so this check if the &from is a directory
     if Path::new(&from).is_dir() {
