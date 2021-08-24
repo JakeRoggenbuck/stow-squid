@@ -7,7 +7,6 @@ use std::fs::{copy, File};
 use std::io;
 use std::io::{stdin, Read};
 use std::path::Path;
-use std::process::exit;
 use structopt::StructOpt;
 use toml::de;
 

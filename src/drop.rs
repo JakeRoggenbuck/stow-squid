@@ -1,5 +1,4 @@
 use super::copy;
-use super::exit;
 use super::get_message_from_dot;
 use super::{io, stdin};
 use super::{Config, Dot, Verbs};
@@ -47,13 +46,13 @@ fn action_for_dot(
 fn safely_copy(
     from: impl AsRef<Path> + AsRef<OsStr> + Display,
     to: impl AsRef<Path> + AsRef<OsStr>,
-) -> Result<(), io::Error> {
+) -> Result<bool, io::Error> {
     if !Path::new(&from).exists() {
         eprintln!(
             "🦈 The file stow-squid is copying from does not exist: {}",
             from
         );
-        exit(1)
+        return Ok(false);
     }
 
     // TODO: Currently, there is not an implemented way to move entire directories
@@ -65,19 +64,20 @@ fn safely_copy(
         );
     } else {
         copy(&from, &to)?;
-        println!("📦 Moved \"{}\"!", from);
     }
 
-    Ok(())
+    Ok(true)
 }
 
 /// Ask for each dot file to run save_inner on it
 pub fn save(config: &Config, verb: &Verbs, dot_name: Option<String>) -> Result<(), io::Error> {
-    println!("🦑 Saving move!");
+    println!("🦑 Saving mode!");
 
     /// Copy the deployed file to the origin location
     fn save_inner(dot: &Dot) -> Result<(), io::Error> {
-        safely_copy(&dot.deployed, &dot.origin)?;
+        if safely_copy(&dot.deployed, &dot.origin)? {
+            println!("📦 Saved \"{}\"!", &dot.name);
+        }
         Ok(())
     }
 
@@ -87,12 +87,13 @@ pub fn save(config: &Config, verb: &Verbs, dot_name: Option<String>) -> Result<(
 
 /// Ask for each dot file to run deploy_inner on it
 pub fn deploy(config: &Config, verb: &Verbs, dot_name: Option<String>) -> Result<(), io::Error> {
-    println!("🦑 Deploy move!");
+    println!("🦑 Deploy mode!");
 
     /// Copy the origin file to the deployed location
     fn deploy_inner(dot: &Dot) -> Result<(), io::Error> {
-        copy(&dot.origin, &dot.deployed)?;
-        println!("Successfully deployed {}!", dot.name);
+        if safely_copy(&dot.origin, &dot.deployed)? {
+            println!("🐬 Successfully deployed {}!", dot.name);
+        }
         Ok(())
     }
 
