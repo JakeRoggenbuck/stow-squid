@@ -20,23 +20,20 @@ ssh [recommended](https://docs.github.com/en/get-started/getting-started-with-gi
 For all verbs, the name is of a specific dotfile and is optional. Including a name will only run the verb on that dotfile. Without a name, it will run the verb on all the dots in the config.
 
 ### Save
+This is to update your dotfiles (that are scattered around your machine) to your git repo 
 ```
 stow-squid save <name>
 ```
 
 ### Deploy
+This is to place all your dotfiles from your git repo to all the various places they might go
 ```
 stow-squid deploy <name>
 ```
 
-### Diff
+### List
 ```
 stow-squid list
-```
-
-### Diff
-```
-stow-squid diff <name>
 ```
 
 ## Config
