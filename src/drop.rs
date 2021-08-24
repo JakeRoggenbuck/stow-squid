@@ -92,7 +92,7 @@ pub fn deploy(config: &Config, verb: &Verbs, dot_name: Option<String>) -> Result
     /// Copy the origin file to the deployed location
     fn deploy_inner(dot: &Dot) -> Result<(), io::Error> {
         copy(&dot.origin, &dot.deployed)?;
-        println!("Successfully deployed {}!", dot.name);
+        println!("🐬 Successfully deployed {}!", dot.name);
         Ok(())
     }
 
