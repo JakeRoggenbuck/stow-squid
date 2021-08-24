@@ -21,22 +21,22 @@ For all verbs, the name is of a specific dotfile and is optional. Including a na
 
 ### Save
 ```
-save-squid save <name>
+stow-squid save <name>
 ```
 
 ### Deploy
 ```
-save-squid deploy <name>
+stow-squid deploy <name>
 ```
 
 ### Diff
 ```
-save-squid list
+stow-squid list
 ```
 
 ### Diff
 ```
-save-squid diff <name>
+stow-squid diff <name>
 ```
 
 ## Config
