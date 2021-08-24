@@ -65,7 +65,6 @@ fn safely_copy(
         );
     } else {
         copy(&from, &to)?;
-        println!("📦 Moved \"{}\"!", from);
     }
 
     Ok(())
@@ -78,6 +77,7 @@ pub fn save(config: &Config, verb: &Verbs, dot_name: Option<String>) -> Result<(
     /// Copy the deployed file to the origin location
     fn save_inner(dot: &Dot) -> Result<(), io::Error> {
         safely_copy(&dot.deployed, &dot.origin)?;
+        println!("📦 Saved \"{}\"!", &dot.name);
         Ok(())
     }
 
@@ -91,7 +91,7 @@ pub fn deploy(config: &Config, verb: &Verbs, dot_name: Option<String>) -> Result
 
     /// Copy the origin file to the deployed location
     fn deploy_inner(dot: &Dot) -> Result<(), io::Error> {
-        copy(&dot.origin, &dot.deployed)?;
+        safely_copy(&dot.origin, &dot.deployed)?;
         println!("🐬 Successfully deployed {}!", dot.name);
         Ok(())
     }
