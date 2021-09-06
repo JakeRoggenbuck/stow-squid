@@ -25,6 +25,7 @@ pub struct Dot {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Config {
+    pub gitpath: Option<String>,
     pub files: Vec<Dot>,
 }
 
@@ -68,6 +69,15 @@ fn main() -> Result<(), de::Error> {
     let opt: Opt = Opt::from_args();
 
     let config: Config = open_config().unwrap();
+
+    // Cross compatibility from version 0.1.1 to after
+    if config.gitpath.is_none() {
+        println!("INFO: Programmatic adding and committing has been added as of version 0.1.2.");
+        println!("To get access to this feature, add a 'gitpath = \"/git/path/\"' to your config.");
+        println!("Running as normal for version before 0.1.2");
+        println!("Version in use {}\n\n", env!("CARGO_PKG_VERSION"));
+    }
+
     let verb: Verbs = get_verb(&opt.verb);
 
     match verb {
