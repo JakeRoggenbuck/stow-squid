@@ -1,16 +1,12 @@
-use super::copy;
 use super::get_message_from_dot;
+use super::{copy, env};
 use super::{io, stdin};
 use super::{Config, Dot, Verbs};
 use super::{Display, OsStr, Path};
+use std::process::Command;
 
-/// Ask a message for a dot according to the verb and get a yes or no response
-/// Return a bool depending on the yes or no
-fn ask(verb: &Verbs, dot: &Dot) -> Result<bool, io::Error> {
+fn ask_yes_or_no() -> Result<bool, io::Error> {
     let mut line: String = String::new();
-    let message: String = get_message_from_dot(&verb, &dot);
-
-    println!("{}", message);
     stdin().read_line(&mut line)?;
     line.pop();
 
@@ -18,6 +14,14 @@ fn ask(verb: &Verbs, dot: &Dot) -> Result<bool, io::Error> {
         "Y" | "y" | "" => Ok(true),
         "N" | "n" | _ => Ok(false),
     }
+}
+
+/// Ask a message for a dot according to the verb and get a yes or no response
+/// Return a bool depending on the yes or no
+fn ask_copy(verb: &Verbs, dot: &Dot) -> Result<bool, io::Error> {
+    let message: String = get_message_from_dot(&verb, &dot);
+    println!("{}", message);
+    return ask_yes_or_no();
 }
 
 /// Run a function for each dot file only if the ask was returned as true
@@ -35,7 +39,7 @@ fn action_for_dot(
             }
         }
 
-        if ask(&verb, &dot).unwrap() {
+        if ask_copy(&verb, &dot).unwrap() {
             action(&dot)?;
         }
     }
@@ -82,6 +86,44 @@ pub fn save(config: &Config, verb: &Verbs, dot_name: Option<String>) -> Result<(
     }
 
     action_for_dot(&config, &save_inner, &verb, dot_name)?;
+
+    if config.gitpath.is_some() {
+        println!("Add and commit changes? ");
+        let can_commit = ask_yes_or_no()?;
+
+        if can_commit {
+            let path_source: &str = config.gitpath.as_ref().unwrap();
+            let path = Path::new(&path_source);
+
+            if env::set_current_dir(path).is_ok() {
+                println!("Moved to {}", path.display());
+
+                let add = Command::new("git")
+                    .args(&["add", "-u"])
+                    .output()
+                    .expect("failed to add files");
+
+                // TODO: Add -m to stow-squid for message
+                // and or user provided message
+                let commit_message = "stow-squid updated";
+
+                let commit = Command::new("git")
+                    .args(&["commit", "-m", commit_message])
+                    .output()
+                    .expect("failed to commit");
+
+                if commit.status.success() {
+                    // A successful add is only relevant if a commit is successful
+                    if add.status.success() {
+                        println!("Successfully added!");
+                    }
+
+                    println!("Successfully committed '{}'", commit_message);
+                }
+            }
+        }
+    }
+
     Ok(())
 }
 

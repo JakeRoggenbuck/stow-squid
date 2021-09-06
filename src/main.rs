@@ -9,6 +9,7 @@ use std::io::{stdin, Read};
 use std::path::Path;
 use structopt::StructOpt;
 use toml::de;
+use std::env;
 
 pub mod drop;
 pub mod verb;
