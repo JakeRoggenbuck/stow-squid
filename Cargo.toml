@@ -1,7 +1,7 @@
 [package]
 name = "stow-squid"
 authors = ["jakeroggenbuck <jakeroggenbuck2@gmail.com>"]
-version = "0.1.1"
+version = "0.1.2"
 license = "MIT"
 edition = "2018"
 description = "Stow your dotfiles"
