@@ -43,6 +43,9 @@ stow-squid list
 
 ## Config
 ```toml
+# Git path
+gitpath = "/path/to/git/dir"
+
 # Structure
 
 # [[files]]
@@ -68,6 +71,8 @@ deployed = ""
 
 ## Config Example
 ```toml
+gitpath = "/home/jake/Build/dotfiles/"
+
 [[files]]
 name = "bspwm"
 origin = "/home/jake/Build/dotfiles/bspwm/bspwmrc"
