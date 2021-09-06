@@ -1,6 +1,7 @@
 use home::home_dir;
 use serde::{Deserialize, Serialize};
 use std::cmp::PartialEq;
+use std::env;
 use std::ffi::OsStr;
 use std::fmt::Display;
 use std::fs::{copy, File};
@@ -9,7 +10,6 @@ use std::io::{stdin, Read};
 use std::path::Path;
 use structopt::StructOpt;
 use toml::de;
-use std::env;
 
 pub mod drop;
 pub mod verb;
