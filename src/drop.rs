@@ -31,10 +31,13 @@ fn action_for_dot(
     verb: &Verbs,
     dot_name: Option<String>,
 ) -> Result<(), io::Error> {
+    let mut found: bool = false;
     for dot in &config.files {
         // If a name is provided, continue everything but the name
         if dot_name.is_some() {
-            if dot_name.as_ref().unwrap() != &dot.name {
+            if dot_name.as_ref().unwrap() == &dot.name {
+                found = true;
+            } else {
                 continue;
             }
         }
@@ -43,6 +46,18 @@ fn action_for_dot(
             action(&dot)?;
         }
     }
+
+    // If a dotfile name is provided
+    if dot_name.is_some() {
+        // And it was not found in the config
+        if !found {
+            println!(
+                "{} is not a name of a dotfile in the config.",
+                dot_name.unwrap()
+            );
+        }
+    }
+
     Ok(())
 }
 
