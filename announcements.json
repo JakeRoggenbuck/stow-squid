@@ -1,0 +1,4 @@
+[
+  "Programmatic adding and committing has been added as of version 0.1.2",
+  "To get access to this feature, add a 'gitpath = \"/git/path/\"' to your config."
+]
