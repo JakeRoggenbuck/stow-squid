@@ -3,12 +3,6 @@ Stow your dotfiles
 
 ![image](https://user-images.githubusercontent.com/35516367/130694893-177cf2d5-eda1-419a-b6f7-1b2eb1f1d4cf.png)
 
-## Announcements
-- Programmatic adding and committing has been added as of version 0.1.2
-- To get access to this feature, add a 'gitpath = "/git/path/"' to your config.
-
-end_announcements
-
 ## Install
 ```sh
 git clone https://github.com/JakeRoggenbuck/stow-squid.git
