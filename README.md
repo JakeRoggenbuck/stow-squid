@@ -6,7 +6,7 @@ Stow your dotfiles
 ## Install
 ```sh
 git clone https://github.com/JakeRoggenbuck/stow-squid.git
-
+cd stow-squid
 cargo install --path .
 
 # Add config to ~/.config/stow-squid/stow-squid.toml
